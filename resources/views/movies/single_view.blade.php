@@ -4,39 +4,35 @@
 <div id="contact" class="container-fluid bg-grey">
 <div class="row">
   <div class="col-sm-6">
-    <h1 class="view-page-title">MEDIA HEADING</h1>
+    <h1 class="view-page-title">{{ @$movie->name }}</h1>
   </div>
   <div class="col-sm-6">
     <ul class="view-page-list">
-          <li>Genre : ABC, </li>
-          <li>Release Date : 01/01/2019</li>
+          <li>Genre : {{ @$movie->genre->name }} </li>
+          <li>Release Date : {{ @date("d-M-Y",strtotime($movie->release_date)) }}</li>
     </ul>
   </div>
 </div>
 <div class="movie-image-slider">
   <div id="carousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
-      <div class="item active"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
-      <div class="item"> <img src="images/movie1.jpeg"> </div>
+      <?php $i = 0; ?>
+      @foreach(@$movie->images as $image)
+      <div class="item <?php if($i==0){ echo "active"; } $i++; ?>">
+        <img src="{{ url('images').'/'.$image->image_name }}">
+      </div>
+      @endforeach
     </div>
   </div>
   <div class="clearfix">
     <div id="thumbcarousel" class="carousel slide" data-interval="false">
       <div class="carousel-inner">
         <div class="item active">
-          <div data-target="#carousel" data-slide-to="0" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="1" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="2" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="3" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="4" class="thumb"><img src="images/movie1.jpeg"></div>
+          <?php $j = 0; ?>
+          @foreach(@$movie->images as $image)
+            <div data-target="#carousel" data-slide-to="{{ $j }}" class="thumb"><img src="{{ url('images').'/'.$image->image_name }}"></div>
+            <?php $j++; ?>
+          @endforeach
         </div>
         <div class="item">
           <div data-target="#carousel" data-slide-to="5" class="thumb"><img src="images/movie1.jpeg"></div>

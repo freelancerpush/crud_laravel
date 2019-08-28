@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Input;
 //use ImageIntervention;
 use Intervention\Image\ImageManagerStatic as ImageIntervention;
 
-class ProductController extends Controller
+class MovieController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -103,8 +103,9 @@ class ProductController extends Controller
      */
     public function edit(Movie $movie)
     {
-        $selected_movie = Movie::whereId($movie->id)->first();
-        return view('movies',compact('selected_movie'));
+        $genres = Genre::all();
+        $movie = Movie::with('images')->with('genre')->whereId($movie->id)->first();
+        return view('movies.edit',compact('movie','genres'));
     }
 
     /**
@@ -116,7 +117,36 @@ class ProductController extends Controller
      */
     public function update(Request $request, Movie $movie)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'release_date' => 'required|max:255',
+            'genre_id' => 'required|max:255'
+        ]);
+        //$movie = Movie($movie->id);
+        $movie->name = $request->name;
+        $movie->release_date = $request->release_date;
+        $movie->genre_id = $request->genre_id;
+        $movie->update();
+        $movie_id = $movie->id;
+
+        //Code for multiple image uploading start
+        $images=array();
+        if($files=$request->file('images')){
+            foreach($files as $file){
+                $name=time().$file->getClientOriginalName();
+                $file->move('images',$name);
+                /*Insert your data*/
+                Image::create(array('image_name'=>$name,'movie_id'=>$movie_id));
+            }
+        }
+
+        if ($movie_id) {
+            session()->flash('success','Movie Update Successfully');
+            return redirect()->back();
+        }else{
+            session()->flash('danger','Something went wrong');
+            return redirect()->back();
+        }
     }
 
     /**
@@ -128,6 +158,14 @@ class ProductController extends Controller
     public function destroy(Movie $movie)
     {
         if (isset($movie->id)) {
+
+            $images = Image::whereId($movie->id)->get();
+            foreach ($images as $image) {
+                $image_path = public_path() ."/images/".$image->image_name;
+                if(File::exists($image_path)) {
+                    File::delete($image_path);
+                }
+            }
             $delete = Movie::whereId($movie->id)->delete();
             if ($delete) {
                 session()->flash('success','Country Deleted Successfully');

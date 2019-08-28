@@ -15,4 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('movie', 'ProductController');
+Route::resource('movie', 'MovieController');
+Route::post('movie/delete_image', 'ImageController@delete_image');

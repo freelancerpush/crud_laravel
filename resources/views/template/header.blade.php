@@ -10,6 +10,11 @@
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
   <script src="{{ asset('/js/jquery.min.js') }}"></script>
   <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.min.js" ></script>
+    
   <style>
   body {
     font: 400 15px Lato, sans-serif;
@@ -30,7 +35,9 @@
     font-weight: 400;
     margin-bottom: 30px;
   }  
-  
+  .container-fluid.bg-grey{
+    min-height: 500px;
+  }
   .container-fluid {
     padding: 60px 50px;
   }

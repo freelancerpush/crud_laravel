@@ -4,6 +4,7 @@
 
 <!-- Container (Contact Section) -->
 <div id="contact" class="container-fluid bg-grey">
+	<h2 class="text-center">Movie Listing</h2>
 @foreach($movies as $movie)
   <!-- Start list Div-->
   <div class="media">
@@ -42,8 +43,21 @@
 @endsection
 <script type="text/javascript">
 	function deleteconfirm(fromId) {
-		document.getElementById(fromId).submit();
+		swal({
+		    title: "Are you sure?",
+		    text: "You will not be able to recover this lorem ipsum!",
+		    type: "warning",
+		    showCancelButton: true,
+		    confirmButtonColor: "#DD6B55",
+		    confirmButtonText: "Yes, delete it!",
+		  }).then(result => {
+		  	console.log(result.value);
+		     if (result.value) {
+		     	document.getElementById(fromId).submit();
+		     }
+		  });
 	}
 	
 </script>
+
 

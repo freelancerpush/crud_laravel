@@ -6,7 +6,7 @@
   <h2 class="text-center">Add new movie</h2>
   <div class="row">
     <div class="col-sm-12 slideanim">
-    	<form method="post" action="{{ action('ProductController@store') }}" enctype="multipart/form-data">
+    	<form method="post" action="{{ action('MovieController@store') }}" enctype="multipart/form-data">
     	 @csrf
 	      <div class="row">
 	        <div class="col-sm-6 form-group">
