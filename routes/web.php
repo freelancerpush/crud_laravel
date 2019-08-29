@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'MovieController@index');
 
 Route::resource('movie', 'MovieController');
 Route::post('movie/delete_image', 'ImageController@delete_image');

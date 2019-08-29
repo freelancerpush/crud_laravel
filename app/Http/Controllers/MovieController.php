@@ -160,11 +160,10 @@ class MovieController extends Controller
     {
         if (isset($movie->id)) {
 
-            $images = Image::whereId($movie->id)->get();
+            $images = Image::whereMovieId($movie->id)->get();
             foreach ($images as $image) {
                 $image_path = public_path() ."/images/".$image->image_name;
                 if(File::exists($image_path)) {
-                    echo "exists";die();
                     File::delete($image_path);
                 }
             }
