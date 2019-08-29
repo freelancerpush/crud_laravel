@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Movie;
 use App\Genre;
 use App\Image;
+use File;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input;
@@ -163,6 +164,7 @@ class MovieController extends Controller
             foreach ($images as $image) {
                 $image_path = public_path() ."/images/".$image->image_name;
                 if(File::exists($image_path)) {
+                    echo "exists";die();
                     File::delete($image_path);
                 }
             }
