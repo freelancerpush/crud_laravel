@@ -6,7 +6,9 @@ use App\Movie;
 use App\Genre;
 use App\Image;
 use File;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreMovie;
+use App\Services\ImageService;
+use App\Services\ImageDeleteService;
 
 use Illuminate\Support\Facades\Input;
 
@@ -20,6 +22,15 @@ class MovieController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    protected $imageservices;
+
+    public function __construct(ImageService $imageservices,ImageDeleteService $imagedeleteervices, Movie $movie)
+    {
+        $this->imageservices = $imageservices;
+        $this->imagedeleteervices = $imagedeleteervices;
+        $this->movie = $movie;
+    }
+
     public function index()
     {
         $movies = Movie::with('images')->with('genre')->get();
@@ -43,37 +54,20 @@ class MovieController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreMovie $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:255|unique:movies',
-            'release_date' => 'required|max:255',
-            'genre_id' => 'required|max:255',
-            'images' => 'required'
-        ]);
-        $movie = new Movie();
-        $movie->name = $request->name;
-        $movie->release_date = $request->release_date;
-        $movie->genre_id = $request->genre_id;
-        $movie->save();
-        $movie_id = $movie->id;
-
+        $this->movie = Movie::create($request->only(['name', 'release_date','genre_id']));
         //Code for multiple image uploading start
-        $images=array();
-        if($files=$request->file('images')){
+        if($files = $request->file('images')){
             foreach($files as $file){
-                $name=time().$file->getClientOriginalName();
-                $file->move('images',$name);
-                /*Insert your data*/
-                Image::create(array('image_name'=>$name,'movie_id'=>$movie_id));
-                /*Insert your data*/
-                //ImageIntervention::make($file->getRealPath())->resize(320, 240)->insert('images/thumbnail/'.$file->getClientOriginalName());
-                //ImageIntervention::make('images/1566984657Screen Shot 2019-08-03 at 4.03.55 PM')->resize(320, 240)->insert('images/thumbnail/1566984657Screen Shot 2019-08-03 at 4.03.55 PM');
-                //ImageIntervention::make('public/images/'.$name)->resize(320, 240)->insert('public/images/thumbnail/'.$name);
+                $name = time().$file->getClientOriginalName();
+                $this->imageservices->handleUploadedImage($file,$name);
+                //Insert image name in table
+                $this->movie->images()->create(array('image_name'=>$name));
             }
         }
 
-        if ($movie_id) {
+        if ($this->movie->id) {
             session()->flash('success','Movie Added Successfully');
             return redirect()->back();
         }else{
@@ -116,32 +110,20 @@ class MovieController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Movie $movie)
+    public function update(StoreMovie $request, Movie $movie)
     {
-        $this->validate($request, [
-            'name' => 'required|max:255',
-            'release_date' => 'required|max:255',
-            'genre_id' => 'required|max:255'
-        ]);
-        //$movie = Movie($movie->id);
-        $movie->name = $request->name;
-        $movie->release_date = $request->release_date;
-        $movie->genre_id = $request->genre_id;
-        $movie->update();
-        $movie_id = $movie->id;
-
+        $movie->create($request->only(['name', 'release_date','genre_id']));
         //Code for multiple image uploading start
-        $images=array();
         if($files=$request->file('images')){
             foreach($files as $file){
-                $name=time().$file->getClientOriginalName();
-                $file->move('images',$name);
-                /*Insert your data*/
-                Image::create(array('image_name'=>$name,'movie_id'=>$movie_id));
+                $name = time().$file->getClientOriginalName();
+                $this->imageservices->handleUploadedImage($file,$name);
+                //Insert image name in table
+                $movie->images()->create(array('image_name'=>$name));
             }
         }
 
-        if ($movie_id) {
+        if ($movie->id) {
             session()->flash('success','Movie Update Successfully');
             return redirect()->back();
         }else{
@@ -162,10 +144,7 @@ class MovieController extends Controller
 
             $images = Image::whereMovieId($movie->id)->get();
             foreach ($images as $image) {
-                $image_path = public_path() ."/images/".$image->image_name;
-                if(File::exists($image_path)) {
-                    File::delete($image_path);
-                }
+                $this->imagedeleteervices->handleDeleteImage($image);
             }
             $delete = Movie::whereId($movie->id)->delete();
             if ($delete) {

@@ -9,7 +9,7 @@
   <div class="col-sm-6">
     <ul class="view-page-list">
           <li>Genre : {{ @$movie->genre->name }} </li>
-          <li>Release Date : {{ @date("d-M-Y",strtotime($movie->release_date)) }}</li>
+          <li>Release Date : {{ @$movie->release_date }}</li>
     </ul>
   </div>
 </div>
@@ -18,7 +18,7 @@
     <div class="carousel-inner">
       <?php $i = 0; ?>
       @foreach(@$movie->images as $image)
-      <div class="item <?php if($i==0){ echo "active"; } $i++; ?>">
+      <div class="item @if ($i === 0) active @endif <?php $i++; ?>">
         <img src="{{ url('images').'/'.$image->image_name }}">
       </div>
       @endforeach
@@ -33,13 +33,6 @@
             <div data-target="#carousel" data-slide-to="{{ $j }}" class="thumb"><img src="{{ url('images').'/'.$image->image_name }}"></div>
             <?php $j++; ?>
           @endforeach
-        </div>
-        <div class="item">
-          <div data-target="#carousel" data-slide-to="5" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="6" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="7" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="8" class="thumb"><img src="images/movie1.jpeg"></div>
-          <div data-target="#carousel" data-slide-to="9" class="thumb"><img src="images/movie1.jpeg"></div>
         </div>
       </div>
       <!-- /carousel-inner --> 

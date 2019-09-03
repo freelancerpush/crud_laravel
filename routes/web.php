@@ -13,5 +13,5 @@
 
 Route::get('/', 'MovieController@index');
 
-Route::resource('movie', 'MovieController');
-Route::post('movie/delete_image', 'ImageController@delete_image');
+Route::resource('movies', 'MovieController');
+Route::post('movies/delete-image', 'ImageController@deleteImage');

@@ -9,7 +9,7 @@
   <!-- Start list Div-->
   <div class="media">
     <div class="icons">
-    	<?php $deleteurl = 'movie/'.$movie->id; ?>
+    	<?php $deleteurl = 'movies/'.$movie->id; ?>
         <?php $formld = 'delete-'.$movie->id.'form'; ?>
         <form action="{{ $deleteurl }}" id="{{ $formld }}" method="post">
         	<input type="hidden" name="_method" value="delete" />
@@ -18,7 +18,7 @@
        <a href="javascript:void(0)" onclick="deleteconfirm('<?php echo $formld;?>');">
        	<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
        </a>
-       <?php $url = 'movie/'.$movie->id.'/edit'; ?>
+       <?php $url = 'movies/'.$movie->id.'/edit'; ?>
        <a href="{{ $url }}">
        	<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
        </a>
@@ -28,10 +28,10 @@
     	@break
     @endforeach
     <div class="media-body list">
-        <h2 class="mt-0"><a href="movie/{{ $movie->id }}">{{ @$movie->name }}</a></h2>
+        <h2 class="mt-0"><a href="movies/{{ $movie->id }}">{{ @$movie->name }}</a></h2>
         <ul>
           <li>Genre : {{ @$movie->genre->name }}</li>
-          <li>Release Date : {{ @date("d-M-Y",strtotime($movie->release_date)) }}</li>
+          <li>Release Date : {{ @$movie->release_date }}</li>
         </ul>
     </div>
   </div>
@@ -44,8 +44,8 @@
 <script type="text/javascript">
 	function deleteconfirm(fromId) {
 		swal({
-		    title: "Are you sure?",
-		    text: "You will not be able to recover this lorem ipsum!",
+		    title: "Are you sure to delete?",
+		    text: "You will not be able to recover this movie!",
 		    type: "warning",
 		    showCancelButton: true,
 		    confirmButtonColor: "#DD6B55",
