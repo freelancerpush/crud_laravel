@@ -10,8 +10,8 @@ class Image extends Model
 	protected $fillable = [
         'image_name', 'movie_id',
     ];
-    public function product()
+    public function movie()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo('App\Movie');
     }
 }

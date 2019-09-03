@@ -23,8 +23,13 @@ class Movie extends Model
         return $this->hasMany('App\Image');
     }
     //For date format of release date
-    public function getReleaseDateAttribute($date)
+    public function getReleaseDateAttribute($name='')
     {
         return (new Carbon\Carbon($this->attributes['release_date']))->format('d-M-Y');
+    }
+    //For name format
+    public function getNameAttribute($name='')
+    {
+        return ucfirst($this->attributes['name']);
     }
 }

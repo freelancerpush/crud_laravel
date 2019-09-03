@@ -11,9 +11,10 @@ use App\Services\ImageService;
 use App\Services\ImageDeleteService;
 
 use Illuminate\Support\Facades\Input;
+use Lang;
 
 //use ImageIntervention;
-use Intervention\Image\ImageManagerStatic as ImageIntervention;
+//use Intervention\Image\ImageManagerStatic as ImageIntervention;
 
 class MovieController extends Controller
 {
@@ -68,11 +69,9 @@ class MovieController extends Controller
         }
 
         if ($this->movie->id) {
-            session()->flash('success','Movie Added Successfully');
-            return redirect()->back();
+            return back()->with('success',Lang::get('message.add_y',array('item' => 'Movie')));
         }else{
-            session()->flash('danger','Something went wrong');
-            return redirect()->back();
+            return back()->with('danger',Lang::get('message.went_wrong'));
         }
     }
 
@@ -124,11 +123,9 @@ class MovieController extends Controller
         }
 
         if ($movie->id) {
-            session()->flash('success','Movie Update Successfully');
-            return redirect()->back();
+            return back()->with('success',Lang::get('message.update_y',array('item' => 'Movie')));;
         }else{
-            session()->flash('danger','Something went wrong');
-            return redirect()->back();
+            return back()->with('danger',Lang::get('message.went_wrong'));
         }
     }
 
@@ -144,15 +141,14 @@ class MovieController extends Controller
 
             $images = Image::whereMovieId($movie->id)->get();
             foreach ($images as $image) {
+                //services for delete image
                 $this->imagedeleteervices->handleDeleteImage($image);
             }
             $delete = Movie::whereId($movie->id)->delete();
             if ($delete) {
-                session()->flash('success','Country Deleted Successfully');
-                return redirect()->back();
+                return redirect()->back()->with('success',Lang::get('message.delete_y',array('item' => 'Movie')));;
             }else{
-                session()->flash('danger','Something went wrong');
-                return redirect()->back();
+                return back()->with('danger',Lang::get('message.went_wrong'));
             }
         }
     }
