@@ -25,6 +25,7 @@ class StoreMovie extends FormRequest
     {
         return [
             'name' => 'required|max:255',
+            'name.*' => 'mimes:img,jpg,jpeg,png,bmp',
             'release_date' => 'required|max:255',
             'genre_id' => 'required|max:255',
             'images' => 'required'

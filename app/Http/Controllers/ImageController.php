@@ -33,4 +33,15 @@ class ImageController extends Controller
             }
         }
     }
+    public function defaultImage(Request $request)
+    {
+        $image_id = $request->image_id;
+        $movie_id = $request->movie_id;
+        if($image_id!="" && $movie_id!="")
+        {
+            $image = Image::whereId($image_id)->update(array('is_primary'=>1));
+            $image = Image::where('id','!=',$image_id)->where('movie_id',$movie_id)->update(array('is_primary'=>0));
+        }
+        
+    }
 }

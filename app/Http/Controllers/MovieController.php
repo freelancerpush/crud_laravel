@@ -65,6 +65,7 @@ class MovieController extends Controller
                 $this->imageservices->handleUploadedImage($file,$name);
                 //Insert image name in table
                 $this->movie->images()->create(array('image_name'=>$name));
+                $this->Thumbnail(public_path('images/').$name,"thumb_".$name);
             }
         }
 
@@ -84,8 +85,11 @@ class MovieController extends Controller
     public function show(Movie $movie)
     {
         if (isset($movie->id)) {
-            $movie = Movie::with('images')->with('genre')->whereId($movie->id)->first();
-            return view('movies.single_view',compact('movie'));
+            //$movie = Movie::with('images')->with('genre')->whereId($movie->id)->first();
+            $movie = Movie::with(['images' => function ($query) {
+                $query->orderBy('is_primary', 'desc');
+            }])->with('genre')->whereId($movie->id)->first();
+            return view('movies.single_view_javascript',compact('movie'));
         }
     }
 
@@ -151,5 +155,19 @@ class MovieController extends Controller
                 return back()->with('danger',Lang::get('message.went_wrong'));
             }
         }
+    }
+    protected function Thumbnail($url, $filename, $width = 128, $height = true) {
+        // download and create gd image
+        $image = ImageCreateFromString(file_get_contents($url));
+        // calculate resized ratio
+        // Note: if $height is set to TRUE then we automatically calculate the height based on the ratio
+        $height = $height === true ? (ImageSY($image) * $width / ImageSX($image)) : $height;
+        // create image 
+        $output = ImageCreateTrueColor($width, $height);
+        ImageCopyResampled($output, $image, 0, 0, 0, 0, $width, $height, ImageSX($image), ImageSY($image));
+        // save image
+        ImageJPEG($output, "images/thumbnail/".$filename, 95); 
+        // return resized image
+        // return $output; // if you need to use it
     }
 }

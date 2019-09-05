@@ -17,6 +17,7 @@ class CreateImagesTable extends Migration
             $table->bigIncrements('id');
             $table->string('image_name');
             $table->unsignedBigInteger('movie_id');
+            $table->unsignedBigInteger('is_primary')->default(0);
             $table->foreign('movie_id')->references('id')->on('movies')->onDelete('cascade');
         });
     }

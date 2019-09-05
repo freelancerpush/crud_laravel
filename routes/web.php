@@ -15,3 +15,4 @@ Route::get('/', 'MovieController@index');
 
 Route::resource('movies', 'MovieController');
 Route::post('movies/delete-image', 'ImageController@deleteImage');
+Route::post('images/set-default', 'ImageController@defaultImage');
